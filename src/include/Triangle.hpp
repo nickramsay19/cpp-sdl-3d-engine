@@ -205,6 +205,8 @@ struct Mesh {
     std::vector<Triangle<N>> tris;
     Point<N> origin;
 
+    int red = 0, green = 0, blue = 0;
+
     Mesh(std::vector<Triangle<N>> tris)
         : origin{Point<N>(0,0,0)}, tris{tris} {}
 
@@ -235,6 +237,20 @@ struct Mesh {
             t.c.x += origin.x;
             t.c.y += origin.y;
             t.c.z += origin.z;
+        }
+    }
+
+    template <Numeric M = N>
+    void set_origin(const Point<M>& p) {
+        const Point<N> pN = static_cast<Point<N>>(p);
+
+        // calculate change
+        Point<N> translation = pN;
+        translation -= origin;
+
+        origin = pN;
+        for (Triangle<N>& t : tris) {
+            t += translation;
         }
     }
 
